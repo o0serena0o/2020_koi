@@ -1,58 +1,33 @@
 ﻿#include <bits/stdc++.h>
-#define INF 0x7fffffff
-
 using namespace std;
 
-int a_max, b_max, a_to, b_to;
+int n, m;
+vector<int> v(110);
+int dp[110][110];
 
-int ae[100001];
-int af[100001];
-int be[100001];
-int bf[100001];
+int solve(int day, int coupon, int price) {
+	if (n < day) return price; //범위 초과 시 현재 가격 반환
+	if (dp[day][coupon]) return dp[day][coupon] + price; //이미 탐색했을 경우
+	if (v[day]) return solve(day + 1, coupon, price); //불가능한 날짜면 다음날을 탐색
 
-typedef struct _node{
-	int a;
-	int b;
-	int n;
-}node;
+	int ans = (1 << 31) - 1;
+	ans = min(ans, solve(day + 1, coupon, price + 10000)); //1일권 구매
+	ans = min(ans, solve(day + 3, coupon + 1, price + 25000)); //3일권 구매 + 쿠폰 1개
+	ans = min(ans, solve(day + 5, coupon + 2, price + 37000)); //5일권 구매 + 쿠폰 2개
 
-int main()
-{
-	scanf_s("%d %d %d %d", &a_max, &b_max, &a_to, &b_to);
-
-	queue<node> q;
-	node now;
-	q.push(node{ 0,0,0 });
-	while (!q.empty())
-	{
-		now = q.front();
-		q.pop();
-		if (now.a == 0 && ae[now.b] == 1) continue;
-		if (now.a == a_max && af[now.b] == 1)continue;
-		if (now.b == 0 && be[now.a] == 1)continue;
-		if (now.b == b_max && bf[now.a] == 1)continue;
-
-		if (now.a == 0) ae[now.b] = 1;
-		if (now.a == a_max) af[now.b] = 1;
-		if (now.b == 0) be[now.a] = 1;
-		if (now.b == b_max) bf[now.a] = 1;
-
-		if (now.a == a_to && now.b == b_to)
-		{
-			printf("%d", now.n);
-			return 0;
-		}
-
-		if (now.a != 0) q.push(node{ 0,now.b,now.n + 1 });//E(a)
-		if (now.b != 0) q.push(node{ now.a,0,now.n + 1 });//E(b)
-		if (now.a != a_max)q.push(node{ a_max,now.b,now.n + 1 });//F(a)
-		if (now.b != b_max)q.push(node{ now.a,b_max,now.n + 1 });//F(b)
-		if (now.a < b_max - now.b) q.push(node{ 0,now.b + now.a,now.n + 1 });//M(a,b)
-		else q.push(node{ now.a - (b_max - now.b),b_max,now.n + 1 });
-		if (now.b < a_max - now.a) q.push(node{ now.a + now.b,0,now.n + 1 });//M(b,a)
-		else q.push(node{ a_max,now.b - (a_max - now.a),now.n + 1 });
+	if (coupon >= 3) { //쿠폰 사용 가능 시
+		ans = min(ans, solve(day + 1, coupon - 3, price));
 	}
-	printf("-1");
 
-	return 0;
+	dp[day][coupon] = ans - price;
+	return ans;
+}
+
+int main() {
+	ios_base::sync_with_stdio(0); cin.tie(0);
+	cin >> n >> m;
+	for (int i = 0; i < m; i++) {
+		int t; cin >> t; v[t] = 1;
+	}
+	cout << solve(1, 0, 0);
 }
