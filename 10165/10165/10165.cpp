@@ -6,7 +6,6 @@ struct bus {
     int start;
     int end;
     int num;
-
 };
 
 bool compare(bus x, bus y)
@@ -30,7 +29,7 @@ int main()
 
     for (int i = 0; i < m; i++)
     {
-        scanf_s("%d %d",&input[i].start,&input[i].end);
+        scanf_s("%d %d", &input[i].start, &input[i].end);
 
         if (input[i].start > input[i].end)//B 유형
         {
