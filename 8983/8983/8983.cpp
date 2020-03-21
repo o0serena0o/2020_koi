@@ -17,7 +17,7 @@ ll getAns(ll x, ll x1, ll y1)
 int main()
 {
 	scanf_s("%d %d %d", &M, &N, &L);
-	ll MAX = 1000000001;
+	ll MAX = 0xfffffff;
 	for (int i = 0; i < M; i++)
 	{
 		ll x;
@@ -37,7 +37,7 @@ int main()
 	{
 		ll x = arr_N[i].first;
 		ll y = arr_N[i].second;
-		auto left = lower_bound(arr_M.begin(), arr_N.end(), x);
+		auto left = lower_bound(arr_N.begin(), arr_N.end(), x);
 		auto right = left - 1;
 		if (min(getAns(*right, x, y), getAns(*left, x, y)) <= L) ans++;
 	}
