@@ -1,45 +1,72 @@
 ﻿#include <bits/stdc++.h>
 
-typedef long long ll;
-
 using namespace std;
 
-int M, N;
-ll L;
-vector<ll> arr_M;
-vector<pair<ll,ll>> arr_N;
+int result = 0;
+long long l;
 
-ll getAns(ll x, ll x1, ll y1)
+struct xy
 {
-	return abs(x - x1) + y1;
+    int x;
+    int y;
+};
+bool getDistanc(int gun_x, xy ani)
+{
+    int distance = 0;
+    distance = abs(gun_x - ani.x) + ani.y;
+    if (distance <= l) return true;
+    else return false;
 }
-
+bool comp(xy x, xy y)
+{
+    return x.x <= y.x;
+}
 int main()
 {
-	scanf_s("%d %d %d", &M, &N, &L);
-	ll MAX = 0xfffffff;
-	for (int i = 0; i < M; i++)
-	{
-		ll x;
-		scanf_s("%d", &x);
-		arr_M.push_back(x);
-	}
-	for (int i = 0; i < N; i++)
-	{
-		ll x, y;
-		scanf_s("%d %d", &x, &y);
-		arr_N.push_back({ x,y });
-	}
-	sort(arr_M.begin(), arr_M.end());
-	sort(arr_N.begin(), arr_N.end());
-	int ans = 0;
-	for (int i = 0; i < arr_N.size(); i++)
-	{
-		ll x = arr_N[i].first;
-		ll y = arr_N[i].second;
-		auto left = lower_bound(arr_N.begin(), arr_N.end(), x);
-		auto right = left - 1;
-		if (min(getAns(*right, x, y), getAns(*left, x, y)) <= L) ans++;
-	}
-	printf("%d", ans);
+    ios_base :: sync_with_stdio(false);
+    cin.tie(NULL);
+    cout.tie(NULL);
+    int m;
+    int n;
+
+    cin >> m >> n >> l;
+
+    vector<xy> guns(m);
+    for (int i = 0; i < m; i++)
+    {
+        cin >> guns[i].x;
+        guns[i].y = 0;
+    }
+    vector<xy> animals(n);
+    for (int i = 0; i < n; i++)
+    {
+        cin >> animals[i].x >> animals[i].y;
+    }
+    sort(guns.begin(), guns.end(), comp);
+    sort(animals.begin(), animals.end(), comp);
+
+    int leftside = 0;
+    for (int j = 0; j < n; j++)//동물
+    {
+
+        while (leftside != m - 1 && guns[leftside + 1].x < animals[j].x)
+        {
+            leftside++;
+        }
+        if (getDistanc(guns[leftside].x, animals[j]))
+        {
+            result++;
+            continue;
+        }
+        if (leftside != m - 1)
+        {
+            if (getDistanc(guns[leftside + 1].x, animals[j]))
+            {
+                result++;
+                continue;
+            }
+        }
+    }
+    cout << result << endl;
+    return 0;
 }
