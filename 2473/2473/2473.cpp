@@ -1,43 +1,68 @@
 ﻿#include <bits/stdc++.h>
 typedef long long ll;
-
 using namespace std;
-int n;
-vector<ll> liquid(n);
+
+#define INF 0x3f3f3f;
+int N;
+vector<ll> arr;
+
 int main()
 {
-	ios_base::sync_with_stdio(false);
-	cin.tie(NULL); cout.tie(NULL);
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL); cout.tie(NULL);
+    ll result[3] = { 100001 ,100001 ,100001 };
+    ll min = INF;
 
-	cin >> n;
-	for (int i = 0; i < n; i++)
-	{
-		cin >> liquid[i];
-	}
-	sort(liquid.begin(), liquid.end());
-	int idx1 = n - 2, idx2 = n - 1, idx3 = n;
-	for (int i = 0; i < n; i++)
-	{
-		int left = i + 1;
-		int right = n;
-		while (left < right)
-		{
-			ll sum = liquid[i] + liquid[right] + liquid[left];
-			if (abs(sum) < abs(liquid[idx1] + liquid[idx2] + liquid[idx3]))
-			{
-				idx1 = i;
-				idx2 = left;
-				idx3 = right;
-			}
-			if (sum < 0)
-			{
-				left++;
-			}
-			else
-			{
-				right--;
-			}
-		}
-	}
-	cout << liquid[idx1] << ' ' << liquid[idx2] << ' ' << liquid[idx3] << '\n';
+    cin >> N;
+    arr.resize(N);
+    for (int i = 0; i < N; i++)
+    {
+        cin >> arr[i];
+    }
+    sort(arr.begin(), arr.end());
+
+    ll pivot;
+    int left = 0;
+    int right = N - 1;
+    long long temp;
+    for (int i = 0; i < N; ++i)
+    {
+        pivot = arr[i];
+        left = i + 1;
+        right = N - 1;
+        while (true)
+        {
+            if (left >= right) break;
+
+            temp = pivot + arr[left] + arr[right];
+            if (llabs(temp) < min)
+            {
+                min = llabs(temp);
+                result[0] = pivot;
+                result[1] = arr[left];
+                result[2] = arr[right];
+            }
+            if (temp < 0)
+            {
+                left++;
+
+            }
+            else if (temp > 0)
+            {
+                right--;
+            }
+            else
+            {
+                cout << result[0] << ' ' << result[1] << ' ' << result[2];
+                return 0;
+            }
+
+
+        }
+
+    }
+
+    cout << result[0] << ' ' << result[1] << ' ' << result[2];
+
+    return 0;
 }
